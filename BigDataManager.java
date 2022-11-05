@@ -1,5 +1,4 @@
 package com.example.surinklietuva;
-//test
 import com.example.surinklietuva.DataStructures.Magnet;
 import com.example.surinklietuva.DataStructures.User;
 
@@ -18,10 +17,11 @@ public class BigDataManager {
     private File file;
 
     public List<Magnet> getAllMagnetsListFromDataBase() throws FileNotFoundException {
-
+// Isnesti user.dir kaip konstanta, nes failo lokacija dublikuojasi ir naudojama 3 kartus.
         file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\com\\example\\surinklietuva\\ProgramMemory\\MagnetsDataBase");
         Scanner scanner = new Scanner(file);
         String line;
+//Domain srities kintamieji, pakeisti pavadinimus
         String permArea = "Vilniaus apskritis";
         String permCity = "UKMERGĖ";
         List<String> permShops = new ArrayList<>();
@@ -43,6 +43,7 @@ public class BigDataManager {
             }
         }
         magnets.add(new Magnet(permArea, permCity, permShops));
+ // Gali atskleisti vidinį vaizdą grąžinant nuorodą į kintamą objektą. Daugeliu atvejų geresnis būdas grąžinti naują objekto kopiją.
         return magnets;
     }
 
@@ -50,11 +51,12 @@ public class BigDataManager {
 
         String area = "";
         for (int i = 4; i < line.length(); i++) {
+// nenaudoti "+"  cikle
             area += line.charAt(i);
         }
         return area;
     }
-
+// Istrinti getAllMagnetsByArea, nes metodas yra niekur nepanaudotas
     private List<Magnet> getAllMagnetsByArea(String areaName, List<Magnet> allMagnets) /////////////NOT FININSHEDDDDDDDD
     {
         //for(int i=allMagnets.size())
@@ -95,6 +97,8 @@ public class BigDataManager {
     public void writeAllUsersToDB(List<User> usersToWrite) throws IOException {
         file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\com\\example\\surinklietuva\\ProgramMemory\\UsersDataBase");
         FileWriter writer = null;
+//Rastas iškvietimas į metodą, kuris atliks baito konvertavimą į eilutę (arba eilutę į baitą) ir manys, kad numatytasis platformos kodavimas yra tinkamas. 
+//Dėl to programos elgsena įvairiose platformose skirsis. Naudokite alternatyvią API ir aiškiai nurodykite simbolių rinkinio pavadinimą arba simbolių rinkinio objektą.
         writer = new FileWriter(file);
         for (int i = 0; i < usersToWrite.size(); i++) {
 
