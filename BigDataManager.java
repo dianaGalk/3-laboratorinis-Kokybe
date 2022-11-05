@@ -1,5 +1,5 @@
 package com.example.surinklietuva;
-
+//test
 import com.example.surinklietuva.DataStructures.Magnet;
 import com.example.surinklietuva.DataStructures.User;
 
