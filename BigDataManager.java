@@ -1,4 +1,5 @@
 package com.example.surinklietuva;
+
 import com.example.surinklietuva.DataStructures.Magnet;
 import com.example.surinklietuva.DataStructures.User;
 
@@ -13,58 +14,58 @@ import java.util.stream.Collectors;
 
 public class BigDataManager {
 
-    private List<Magnet> magnets = new ArrayList<>();
     private File file;
-
+    static final String magnetDatabaseDirectory = "\\src\\main\\java\\com\\example\\surinklietuva\\ProgramMemory\\MagnetsDataBase";
+    static final String userDatabaseDirectory = "\\src\\main\\java\\com\\example\\surinklietuva\\ProgramMemory\\UsersDataBase";
     public List<Magnet> getAllMagnetsListFromDataBase() throws FileNotFoundException {
-// Isnesti user.dir kaip konstanta, nes failo lokacija dublikuojasi ir naudojama 3 kartus.
-        file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\com\\example\\surinklietuva\\ProgramMemory\\MagnetsDataBase");
-        Scanner scanner = new Scanner(file);
-        String line;
-//Domain srities kintamieji, pakeisti pavadinimus
-        String permArea = "Vilniaus apskritis";
-        String permCity = "UKMERGĖ";
-        List<String> permShops = new ArrayList<>();
-        while (scanner.hasNextLine()) {
-            line = scanner.nextLine();
-            if (line.charAt(0) == 'A' && line.charAt(1) == 'A' && line.charAt(2) == 'A') {
-                magnets.add(new Magnet(permArea, permCity, permShops));
-                permShops = new ArrayList<>();
-                permArea = makeAreaOrCityFromLine(line);
+        List<Magnet> magnets = new ArrayList<>();
+        file = new File(System.getProperty("user.dir") + magnetDatabaseDirectory);
+        String permArea;
+        String permCity;
+        List<String> permShops;
+        try (Scanner scanner = new Scanner(file)) {
+            String line;
+            permArea = "Vilniaus apskritis";
+            permCity = "UKMERGĖ";
+            permShops = new ArrayList<>();
+            while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
-                permCity = makeAreaOrCityFromLine(line);
-            } else if (line.charAt(0) == 'M' && line.charAt(1) == 'M' && line.charAt(2) == 'M') {
+                if (line.charAt(0) == 'A' && line.charAt(1) == 'A' && line.charAt(2) == 'A') {
+                    magnets.add(new Magnet(permArea, permCity, permShops));
+                    permShops = new ArrayList<>();
+                    permArea = makeAreaOrCityFromLine(line);
+                    line = scanner.nextLine();
+                    permCity = makeAreaOrCityFromLine(line);
+                } else if (line.charAt(0) == 'M' && line.charAt(1) == 'M' && line.charAt(2) == 'M') {
 
-                magnets.add(new Magnet(permArea, permCity, permShops));
-                permShops = new ArrayList<>();
-                permCity = makeAreaOrCityFromLine(line);
-            } else {
-                permShops.add(line);
+                    magnets.add(new Magnet(permArea, permCity, permShops));
+                    permShops = new ArrayList<>();
+                    permCity = makeAreaOrCityFromLine(line);
+                } else {
+                    permShops.add(line);
+                }
             }
+            magnets.add(new Magnet(permArea, permCity, permShops));
+            return magnets;
         }
-        magnets.add(new Magnet(permArea, permCity, permShops));
- // Gali atskleisti vidinį vaizdą grąžinant nuorodą į kintamą objektą. Daugeliu atvejų geresnis būdas grąžinti naują objekto kopiją.
-        return magnets;
+        catch(Exception e)
+        {
+            System.out.println("File not found");
+            return null;
+        }
     }
 
     private String makeAreaOrCityFromLine(String line) {
 
         String area = "";
         for (int i = 4; i < line.length(); i++) {
-// nenaudoti "+"  cikle
             area += line.charAt(i);
         }
         return area;
     }
-// Istrinti getAllMagnetsByArea, nes metodas yra niekur nepanaudotas
-    private List<Magnet> getAllMagnetsByArea(String areaName, List<Magnet> allMagnets) /////////////NOT FININSHEDDDDDDDD
-    {
-        //for(int i=allMagnets.size())
-        return null;
-    }
 
     public List<User> getAllUserListFromDataBase() throws FileNotFoundException {
-        file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\com\\example\\surinklietuva\\ProgramMemory\\UsersDataBase");
+        file = new File(System.getProperty("user.dir") + userDatabaseDirectory);
         List<User> users = new ArrayList<>();
         Scanner scanner = new Scanner(file);
         List<String> tempStrings;
@@ -95,16 +96,22 @@ public class BigDataManager {
     }
 
     public void writeAllUsersToDB(List<User> usersToWrite) throws IOException {
-        file = new File(System.getProperty("user.dir") + "\\src\\main\\java\\com\\example\\surinklietuva\\ProgramMemory\\UsersDataBase");
+        file = new File(System.getProperty("user.dir") + userDatabaseDirectory);
         FileWriter writer = null;
-//Rastas iškvietimas į metodą, kuris atliks baito konvertavimą į eilutę (arba eilutę į baitą) ir manys, kad numatytasis platformos kodavimas yra tinkamas. 
-//Dėl to programos elgsena įvairiose platformose skirsis. Naudokite alternatyvią API ir aiškiai nurodykite simbolių rinkinio pavadinimą arba simbolių rinkinio objektą.
-        writer = new FileWriter(file);
-        for (int i = 0; i < usersToWrite.size(); i++) {
+        try
+        {
+            writer = new FileWriter(file);
+            for (int i = 0; i < usersToWrite.size(); i++) {
 
-            writer.write(usersToWrite.get(i).getUserInfoForDataBase() + "\n");
+                writer.write(usersToWrite.get(i).getUserInfoForDataBase() + "\n");
+            }
+            writer.close();
         }
-        writer.close();
+        catch (Exception e)
+        {
+            System.out.println("No file to write was found");
+        }
+
     }
 
     private static List<String> returnStringsListFromLine(String line) {
