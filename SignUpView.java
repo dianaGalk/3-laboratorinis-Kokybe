@@ -1,10 +1,6 @@
 package com.example.surinklietuva.Controllers;
-
-import com.example.surinklietuva.AllertBox;
-import com.example.surinklietuva.BigDataManager;
-import com.example.surinklietuva.DataStructures.Magnet;
-import com.example.surinklietuva.DataStructures.User;
-import com.example.surinklietuva.HelloApplication;
+import com.example.surinklietuva.DataStructures.*;
+import com.example.surinklietuva.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -42,27 +38,24 @@ public class SignUpView {
 
     private List<User> listOfUsers;
     private BigDataManager bigDataManager = new BigDataManager();
+    private String klaida = "Klaida";
 
     public void setData(List<User> listOfUsers){
         this.listOfUsers = listOfUsers;
     }
-    public boolean checkPasswordLength(String passValue){
-        if(passValue.length()>15 || passValue.length()<4){
-            return false;
-        }
-        return true;
+public boolean checkPasswordLength(String passValue){
+        return (passValue.length()>15 || passValue.length()<4);
     }
 
-    //private static final String regexPattern = "^(.+)@(.+)$";
-    public static boolean checkEmailValidation(String emailValue){          //1.1
-            String regexPattern = "^(.+)@(.+)$";                            //1.2
-            return Pattern.compile(regexPattern)                            //1.2
-                    .matcher(emailValue)                                    //1.2
-                .matches();                                                 //1.2
+    public static boolean checkEmailValidation(String emailValue){
+            String regexPattern = "^(.+)@(.+)$";
+            return Pattern.compile(regexPattern)
+                    .matcher(emailValue)
+                .matches();
     }
 
     public static boolean checkPasswordValidation(String passwordValueOfSimbols){
-        String regexPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{4,15}$";
+        String regexPattern = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{4,15}$";
         return Pattern.compile(regexPattern)
                 .matcher(passwordValueOfSimbols)
                 .matches();
@@ -88,17 +81,15 @@ public class SignUpView {
         String email = emailField.getText();
         String password = passwordField.getText();
         if(!checkEmailValidation(email)){
-            AllertBox.display("Klaida","Neteisingas emailo formatas");
+            AllertBox.display(klaida,"Neteisingas emailo formatas");
         }
         else if(!checkPasswordLength(password)){
-            AllertBox.display("Klaida","Slaptažodis turi būti ne ilgesnis 15 simbolių ir trumpesnis 4 simbolių");
+            AllertBox.display(klaida,"Slaptažodis turi būti ne ilgesnis 15 simbolių ir trumpesnis 4 simbolių");
         }
         else if(!checkPasswordValidation(password)){
-            AllertBox.display("Klaida","Slaptažodis turi turėti savyyje 1 simbolį, viena didžiąją raidę,nors viena skaičių");
+            AllertBox.display(klaida,"Slaptažodis turi turėti savyyje 1 simbolį, viena didžiąją raidę,nors viena skaičių");
         }
-        // Check if fields not null, password field and confirm password field equals
         else if(!name.equals("") && !surname.equals("") && !login.equals("") && !email.equals("") && !password.equals("") && password.equals(confirmPasswordField.getText())) {
-            // Check if login value is distinct
             if(listOfUsers.stream().noneMatch(u-> u.getUsername().equals(login))) {
                 List<Magnet> emptyMagnetList = new ArrayList<>();
                 listOfUsers.add(new User(name, surname, login, email, password, emptyMagnetList));
@@ -107,12 +98,12 @@ public class SignUpView {
             }
             else
             {
-                AllertBox.display("Klaida", "Vartotojas su tokiu prisijungimu jau egzistuoja");
+                AllertBox.display(klaida, "Vartotojas su tokiu prisijungimu jau egzistuoja");
             }
         }
         else
         {
-            AllertBox.display("Klaida", "Visi laukai turi būti užpildyti");
+            AllertBox.display(klaida, "Visi laukai turi būti užpildyti");
         }
     }
 }
