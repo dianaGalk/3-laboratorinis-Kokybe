@@ -54,10 +54,6 @@ public class BigDataManager {
             return null;
         }
     }
-
-    
-    
-    
     private String makeAreaOrCityFromLine(String line) {
 
         String area = "";
@@ -132,6 +128,9 @@ public class BigDataManager {
         }
         writeAllUsersToDB(userList);
     }
+    
+    
+    
 
     public List<Magnet> getListOfMagnetsByRegion(List<Magnet> magnets, String regionName) {
         return magnets.stream().filter(m -> m.getArea().equals(regionName)).collect(Collectors.toList());
