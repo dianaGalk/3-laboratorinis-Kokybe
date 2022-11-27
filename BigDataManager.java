@@ -55,6 +55,9 @@ public class BigDataManager {
         }
     }
 
+    
+    
+    
     private String makeAreaOrCityFromLine(String line) {
 
         String area = "";
